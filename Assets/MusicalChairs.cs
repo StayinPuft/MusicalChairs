@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using Util;
@@ -17,6 +18,7 @@ public class MusicalChairs : MonoBehaviour {
 	public int stopTime;
 	public int counter;
 	public int[] sideNotes = new int[]{8, 24, 40, 56, 72, 88, 104, 120};
+	public InputField inputField;
 
 	// Use this for initialization
 	void Start () {
@@ -29,7 +31,7 @@ public class MusicalChairs : MonoBehaviour {
 	void Update () {
 		if(numPlayers == 0){
 			StopAllCoroutines ();
-			audio.UnPause ();
+			audio.UnPause();
 			foreach(int i in input.notes){
 				lightHandler.Blink (i, Colors.GREEN);
 			}
@@ -42,14 +44,21 @@ public class MusicalChairs : MonoBehaviour {
 
 	public IEnumerator StartSequence(){
 		yield return StartCoroutine(WaitingForInput());
-			audio.UnPause();
+		audio.Play	();
 		yield return new WaitForSeconds(startTime);
 		input.Reset ();
 		StartCoroutine (Go ());
 	}
 
 	public IEnumerator WaitingForInput(){
-		yield return null;
+		int i = 0;
+		while(i <= 1){
+			if(Input.GetKeyDown(KeyCode.Return)){
+				int.TryParse (inputField.text, out i);
+			}
+			yield return null;
+		}
+		numPlayers = i;
 	}
 
 	IEnumerator Cool(){
@@ -88,9 +97,9 @@ public class MusicalChairs : MonoBehaviour {
 			foreach(int note in lights){
 				lightHandler.Light (note, Colors.AMBER);
 			}
-			yield return new WaitForSeconds(.44975f);
+			yield return new WaitForSeconds(.44982f);
 	//		yield return new WaitForSeconds(0.343916666f);
-	//		counter++;
+		//	counter++;
 			if(counter == stopTime){
 				counter = 0;
 				StopCoroutine(this.cool);
